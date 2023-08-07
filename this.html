@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>js的this指向</title>
+</head>
+<body>
+  <script>
+    // 谁调用就指向谁。函数的this指向，由他的执行方式决定。
+    // 闭包的简单定义：函数执行的时候，导致函数被定义，并被抛出。内层函数引用外层函数的变量，作用是延长变量的生命周期。
+
+    console.log('0', this === window); // true。this和window的指向的地址相同
+    console.log('0', {} === {}); // false。两个对象指向的地址不同
+
+    // 1、独立调用
+    function fun1() {
+      console.log('1', this); // window
+    }
+    fun1();
+
+    // 2、隐式调用
+    var obj = {
+      fun2: function () {
+        console.log('2 fun2', this); // fun2
+        function fun21() {
+          console.log('2 fun21', this); // window
+        }
+        fun21();
+      }
+    }
+    obj.fun2();
+
+    // 3、立即执行。this指向全局对象，浏览器是window，node是global
+    (function () {
+      console.log('3 立即', this); // window
+    })();
+    function fun3() {
+      console.log('3 fun3', this); // window
+    }
+    fun3();
+
+    // 4、变量赋值
+    function fun4(num){
+      console.log(num, this);
+    }
+    var obj4 = {
+      fun4: fun4
+    }
+    obj4.fun4('4'); // fun4
+    var temp = obj4.fun4;
+    temp('4'); // 独立调用。window
+
+    // 5、参数调用
+    function fun5(f){
+      f('5');
+    }
+    fun5(obj4.fun4); // window
+
+  </script>
+</body>
+</html>
